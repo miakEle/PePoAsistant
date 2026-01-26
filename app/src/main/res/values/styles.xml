@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Отключаем серый фон выбранной иконки -->
+    <style name="NoActiveIndicator" parent="">
+        <item name="android:color">@android:color/transparent</item>
+        <item name="android:alpha">0</item>
+        <item name="shapeAppearance">@null</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
+</resources>
+

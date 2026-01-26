@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.PePoAsistant" parent="Theme.Material3.Dark.NoActionBar">
+
+        <!-- Убираем серый фон при выборе -->
+        <item name="android:colorControlHighlight">@android:color/transparent</item>
+        <item name="colorControlHighlight">@android:color/transparent</item>
+        <item name="colorSurfaceVariant">@android:color/transparent</item>
+
+        <!-- ВАЖНО: отключаем stateListAnimator, который и даёт серый фон -->
+        <item name="android:stateListAnimator">@null</item>
+
+    </style>
+
+    <style name="Theme.PePoAsistant" parent="Base.Theme.PePoAsistant" />
+
+</resources>
