@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:title="@string/app_name"
+        app:titleCentered="true"
+        android:fitsSystemWindows="true"
+        app:titleTextColor="@android:color/white"
+        app:navigationIconTint="@android:color/white"
+        app:navigationIcon="@drawable/outline_format_list_bulleted_24"/>
+
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
