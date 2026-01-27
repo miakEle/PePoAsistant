@@ -13,14 +13,14 @@ interface TransactionDao {
     fun getAll(): Flow<List<TransactionEntity>>
 
 
-    @Query(
-        """SELECT * FROM transactions
-        WHERE strftime('%Y', date) = :year
-        AND strftime('%m', date) = :month
-        ORDER BY date DESC
-    """
-    )
-    fun getForMonth(year: Int, month: Int): Flow<List<TransactionEntity>>
+    @Query("""
+    SELECT * FROM transactions
+    WHERE strftime('%Y', date) = :year
+      AND strftime('%m', date) = :month
+    ORDER BY date DESC
+""")
+    fun getForMonth(year: String, month: String): Flow<List<TransactionEntity>>
+
 
     @Insert
     suspend fun insert(entity: TransactionEntity)

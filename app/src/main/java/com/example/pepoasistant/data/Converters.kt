@@ -3,7 +3,7 @@ package com.example.pepoasistant.data
 import androidx.room.TypeConverter
 import java.time.LocalDate
 
-class Converter {
+class Converters {
 
     @TypeConverter
     fun fromString(value: String?): LocalDate? =

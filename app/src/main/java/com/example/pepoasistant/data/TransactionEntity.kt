@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 
 @Entity("transactions")
-class TransactionEntity(
+data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val categoryId: Long,
