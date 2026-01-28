@@ -10,6 +10,17 @@
         android:name="com.example.pepoasistant.presentation.StatisticsFragment"
         android:label="Statistics"
         tools:layout="@layout/fragment_statistics" >
+        <action
+            android:id="@+id/action_statisticsFragment_to_fragment_input"
+            app:destination="@id/fragment_input"
+            app:popUpTo="@id/statisticsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_input"
+        android:name="com.example.pepoasistant.presentation.TransactionInputFragment"
+        android:label="Statistics"
+        tools:layout="@layout/fragment_transaction_input" >
     </fragment>
 
 </navigation>

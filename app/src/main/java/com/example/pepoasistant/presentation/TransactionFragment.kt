@@ -15,4 +15,21 @@ class TransactionInputFragment : Fragment(R.layout.fragment_transaction_input) {
         // val saveButton = view.findViewById<MaterialButton>(R.id.saveButton)
         // saveButton.setOnClickListener { ... }
     }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.bottomAppBar).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.bottomNavigation).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.fab).visibility = View.GONE
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().findViewById<View>(R.id.bottomAppBar).visibility = View.VISIBLE
+        requireActivity().findViewById<View>(R.id.bottomNavigation).visibility = View.VISIBLE
+        requireActivity().findViewById<View>(R.id.fab).visibility = View.VISIBLE
+    }
+
+
 }
