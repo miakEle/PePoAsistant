@@ -31,7 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginBottom="75dp"/>
+        android:layout_marginBottom="75dp"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -62,11 +64,21 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_fab_add"
         app:backgroundTint="@color/olive"
         app:layout_anchor="@id/bottomAppBar"
         app:tint="@android:color/black" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_overlay"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:navGraph="@navigation/nav_graph_overlay"
+        android:visibility="gone"
+        android:background="@color/black"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
