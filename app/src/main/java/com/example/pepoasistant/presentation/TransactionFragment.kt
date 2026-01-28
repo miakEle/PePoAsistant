@@ -2,8 +2,10 @@ package com.example.pepoasistant.presentation
 
 
 import android.app.DatePickerDialog
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +22,7 @@ class TransactionInputFragment : Fragment(R.layout.fragment_transaction_input) {
     private var selectedCategoryId: Long? = null
     private var selectedDate: LocalDate = LocalDate.now()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -62,12 +65,12 @@ class TransactionInputFragment : Fragment(R.layout.fragment_transaction_input) {
 
         // --- Save Button ---
         saveButton.setOnClickListener {
-            val categoryId = selectedCategoryId ?: return@setOnClickListener
+//            val categoryId = selectedCategoryId ?: return@setOnClickListener
             val amount = amountInput.text.toString().toDoubleOrNull() ?: return@setOnClickListener
             val note = noteInput.text?.toString()
 
             viewModel.insert(
-                categoryId = categoryId,
+                categoryId = 123,
                 amount = amount,
                 date = selectedDate,
                 note = note

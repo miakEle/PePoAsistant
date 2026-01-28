@@ -26,6 +26,7 @@ class TransactionViewModel(
                     note = note
                 )
             )
+            repository.getAllTransactions().collect {  }
         }
     }
 }

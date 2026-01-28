@@ -2,10 +2,12 @@ package com.example.pepoasistant.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import com.example.pepoasistant.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity() {
             findNavController(R.id.fragment_container)
                 .navigate(R.id.fragment_input)
         }
+
+        lifecycleScope.launch {  }
 
 
 
