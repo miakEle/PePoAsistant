@@ -4,7 +4,7 @@ import android.icu.util.LocaleData
 import java.time.LocalDate
 
 data class Transaction(
-    val id: Long,
+    val id: Long = 0,
     val categoryId: Long,
     val amount: Double,
     val date: LocalDate,
