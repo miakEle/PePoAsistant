@@ -1,5 +1,6 @@
 package com.example.pepoasistant.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pepoasistant.domain.entities.Transaction
@@ -10,6 +11,14 @@ import java.time.LocalDate
 class TransactionViewModel(
     private val repository: TransactionRepository
 ) : ViewModel() {
+
+    init {
+        viewModelScope.launch {
+            repository.getAllTransactions().collect {
+                Log.d("TransactionViewModel", "getAllTransactions")
+            }
+        }
+    }
 
     fun insert(
         categoryId: Long,
@@ -26,7 +35,6 @@ class TransactionViewModel(
                     note = note
                 )
             )
-            repository.getAllTransactions().collect {  }
         }
     }
 }

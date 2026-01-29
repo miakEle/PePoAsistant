@@ -1,14 +1,19 @@
 package com.example.pepoasistant.domain.entities
 
-enum class SuperCategory{
-    NEEDS, WANTS, SAVINGS
+enum class SuperCategory {
+    NEEDS, WANTS, SAVINGS, SALARY
 }
 
-data class Category (
-    val id: Long,
-    val name:String,
+enum class TypeOfCategory {
+    INCOME, EXPENSE
+}
+
+data class Category(
+    val id: Long = 0,
+    val name: String,
     val icon: String,
     val color: Long,
-    val superCategory: SuperCategory
-){
+    val superCategory: SuperCategory,
+    val type: TypeOfCategory
+) {
 }

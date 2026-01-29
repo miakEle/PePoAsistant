@@ -1,4 +1,4 @@
-package com.example.pepoasistant.domain.usecases
+package com.example.pepoasistant.domain.usecases.transaction
 
 import com.example.pepoasistant.domain.entities.Transaction
 import com.example.pepoasistant.domain.repositories.TransactionRepository

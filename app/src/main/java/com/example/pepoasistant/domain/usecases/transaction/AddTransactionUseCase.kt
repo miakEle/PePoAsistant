@@ -1,13 +1,13 @@
-package com.example.pepoasistant.domain.usecases
+package com.example.pepoasistant.domain.usecases.transaction
 
 import com.example.pepoasistant.domain.entities.Transaction
 import com.example.pepoasistant.domain.repositories.TransactionRepository
 
-class DeleteTransactionUseCase(
+class AddTransactionUseCase(
     private val repository: TransactionRepository
 ) {
 
-    suspend operator fun invoke(id: Long) {
-        repository.deleteTransaction(id)
+    suspend operator fun invoke(transaction: Transaction) {
+        repository.addTransaction(transaction)
     }
 }

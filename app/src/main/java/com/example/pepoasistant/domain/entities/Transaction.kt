@@ -1,6 +1,5 @@
 package com.example.pepoasistant.domain.entities
 
-import android.icu.util.LocaleData
 import java.time.LocalDate
 
 data class Transaction(
