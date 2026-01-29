@@ -10,10 +10,13 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.pepoasistant.R
+import com.example.pepoasistant.data.CategoryRepositoryImp
 import com.example.pepoasistant.data.DatabaseProvider
 import com.example.pepoasistant.data.TransactionRepositoryImp
 import com.example.pepoasistant.databinding.FragmentTransactionInputBinding
+import com.example.pepoasistant.domain.entities.TypeOfCategory
 import java.time.LocalDate
 
 class TransactionInputFragment : Fragment() {
@@ -42,9 +45,14 @@ class TransactionInputFragment : Fragment() {
 
         // --- ViewModel ---
         val db = DatabaseProvider.getDatabase(requireContext())
-        val repo = TransactionRepositoryImp(db.transactionDao())
-        val factory = TransactionViewModelFactory(repo)
+
+        val transactionRepo = TransactionRepositoryImp(db.transactionDao())
+        val categoryRepo = CategoryRepositoryImp(db.categoryDao())
+        val mapper = CategoryUiMapper(requireContext())
+
+        val factory = TransactionViewModelFactory(transactionRepo, categoryRepo, mapper)
         viewModel = ViewModelProvider(this, factory)[TransactionViewModel::class.java]
+
 
         // --- Views ---
 //        val categoryGrid = view.findViewById<RecyclerView>(R.id.categoryGrid)
@@ -54,11 +62,20 @@ class TransactionInputFragment : Fragment() {
 //        val saveButton = view.findViewById<MaterialButton>(R.id.saveButton)
 
         // --- Category Grid ---
-//        val adapter = CategoryAdapter { categoryId ->
-//            selectedCategoryId = categoryId
-//        }
-//        categoryGrid.adapter = adapter
-//        adapter.submitList(CategoryProvider.categories)
+        val adapter = CategoryAdapter { category ->
+            selectedCategoryId = category.id
+        }
+        binding.categoryGrid.adapter = adapter
+
+        viewModel.getAllCategoriesByType(TypeOfCategory.EXPENSE)
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.state.collect { categories ->
+                adapter.submitList(categories)
+            }
+        }
+
+
 
         // --- Date Picker ---
         binding.dateInput.setText(selectedDate.toString())

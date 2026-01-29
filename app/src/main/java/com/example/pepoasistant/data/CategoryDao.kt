@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.pepoasistant.domain.entities.TypeOfCategory
 import kotlinx.coroutines.flow.Flow
 
 
@@ -21,6 +22,10 @@ interface CategoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<CategoryEntity>)
+
+    @Query("SELECT * FROM categories WHERE type = :type ORDER BY name")
+    fun getCategoriesByType(type: TypeOfCategory): Flow<List<CategoryEntity>>
+
 
 
 }
