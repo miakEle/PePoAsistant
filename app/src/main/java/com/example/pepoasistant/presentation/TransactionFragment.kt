@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -52,7 +54,7 @@ class TransactionInputFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[TransactionViewModel::class.java]
 
         val adapter = CategoryAdapter { category ->
-           viewModel.onCategoryClicked(category.id)
+            viewModel.onCategoryClicked(category.id)
         }
         binding.categoryGrid.adapter = adapter
 
@@ -63,7 +65,6 @@ class TransactionInputFragment : Fragment() {
                 adapter.submitList(categories)
             }
         }
-
 
 
         // --- Date Picker ---
