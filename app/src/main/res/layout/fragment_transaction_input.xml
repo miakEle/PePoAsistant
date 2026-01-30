@@ -71,8 +71,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Сумма"
-            android:textColorHint="@color/white"
-            android:foregroundTint="@color/olive">
+            app:boxStrokeColor="@color/input_stroke"
+            app:hintTextColor="@color/white"
+            app:cursorColor="@color/olive"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/amountInput"
@@ -87,7 +90,10 @@
             android:id="@+id/dateLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Дата">
+            android:hint="Дата"
+            app:boxStrokeColor="@color/input_stroke"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dateInput"
@@ -103,7 +109,12 @@
             android:id="@+id/noteLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Muistiinpano">
+            android:hint="Muistiinpano"
+            app:boxStrokeColor="@color/input_stroke"
+            app:hintTextColor="@color/white"
+            app:cursorColor="@color/olive"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/noteInput"
