@@ -43,9 +43,7 @@ class TransactionInputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // --- ViewModel ---
         val db = DatabaseProvider.getDatabase(requireContext())
-
         val transactionRepo = TransactionRepositoryImp(db.transactionDao())
         val categoryRepo = CategoryRepositoryImp(db.categoryDao())
         val mapper = CategoryUiMapper(requireContext())
@@ -53,17 +51,8 @@ class TransactionInputFragment : Fragment() {
         val factory = TransactionViewModelFactory(transactionRepo, categoryRepo, mapper)
         viewModel = ViewModelProvider(this, factory)[TransactionViewModel::class.java]
 
-
-        // --- Views ---
-//        val categoryGrid = view.findViewById<RecyclerView>(R.id.categoryGrid)
-//        val amountInput = view.findViewById<TextInputEditText>(R.id.amountInput)
-//        val dateInput = view.findViewById<TextInputEditText>(R.id.dateInput)
-//        val noteInput = view.findViewById<TextInputEditText>(R.id.noteInput)
-//        val saveButton = view.findViewById<MaterialButton>(R.id.saveButton)
-
-        // --- Category Grid ---
         val adapter = CategoryAdapter { category ->
-            selectedCategoryId = category.id
+           viewModel.onCategoryClicked(category.id)
         }
         binding.categoryGrid.adapter = adapter
 
@@ -94,7 +83,6 @@ class TransactionInputFragment : Fragment() {
             picker.show()
         }
 
-        // --- Save Button ---
         binding.saveButton.setOnClickListener {
 //            val categoryId = selectedCategoryId ?: return@setOnClickListener
             val amount =
@@ -102,7 +90,6 @@ class TransactionInputFragment : Fragment() {
             val note = binding.noteInput.text?.toString()
 
             viewModel.insert(
-                categoryId = 123,
                 amount = amount,
                 date = selectedDate,
                 note = note

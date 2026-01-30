@@ -27,6 +27,8 @@ class TransactionViewModel(
         }
     }
 
+    private var isSelectedId: Long = 0
+
 
     private val _state = MutableStateFlow<List<CategoryUi>>(emptyList())
     val state: StateFlow<List<CategoryUi>> = _state
@@ -39,8 +41,14 @@ class TransactionViewModel(
         }
     }
 
+    fun onCategoryClicked(id: Long) {
+        isSelectedId = id
+        _state.value = _state.value.map { item ->
+            item.copy(isSelected = item.id == id)
+        }
+    }
+
     fun insert(
-        categoryId: Long,
         amount: Double,
         date: LocalDate,
         note: String?
@@ -48,7 +56,7 @@ class TransactionViewModel(
         viewModelScope.launch {
             repository.addTransaction(
                 Transaction(
-                    categoryId = categoryId,
+                    categoryId = isSelectedId,
                     amount = amount,
                     date = date,
                     note = note
