@@ -12,10 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PePoAsistant">
         <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.PePoAsistant" />
-        <activity
             android:name=".presentation.MainActivity"
             android:exported="true">
             <intent-filter>
