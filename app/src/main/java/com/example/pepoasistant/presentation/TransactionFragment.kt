@@ -58,6 +58,17 @@ class TransactionInputFragment : Fragment() {
         }
         binding.categoryGrid.adapter = adapter
 
+        binding.cardExpense.setOnClickListener {
+            binding.cardExpense.isChecked = true
+            binding.cardIncome.isChecked = false
+        }
+
+        binding.cardIncome.setOnClickListener {
+            binding.cardIncome.isChecked = true
+            binding.cardExpense.isChecked = false
+        }
+
+
         viewModel.getAllCategoriesByType(TypeOfCategory.EXPENSE)
 
         lifecycleScope.launchWhenStarted {
