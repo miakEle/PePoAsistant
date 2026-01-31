@@ -1,7 +1,6 @@
 package com.example.pepoasistant.presentation
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pepoasistant.domain.entities.Transaction
@@ -37,15 +36,15 @@ class TransactionViewModel(
     private val _state = MutableStateFlow<List<CategoryUi>>(emptyList())
     val state: StateFlow<List<CategoryUi>> = _state
 
-    fun selectType(t: TypeOfCategory){
+    fun selectType(t: TypeOfCategory) {
         _typeOfCategory.value = t
     }
 
-    fun getAllCategoriesByType(){
+    fun getAllCategoriesByType() {
         viewModelScope.launch {
             categoryRepository.getCategoriesByType(_typeOfCategory.value)
-                .map { list-> list.map { mapper.map(it) } }
-                .collect { uiList -> _state.value = uiList}
+                .map { list -> list.map { mapper.map(it) } }
+                .collect { uiList -> _state.value = uiList }
         }
     }
 
