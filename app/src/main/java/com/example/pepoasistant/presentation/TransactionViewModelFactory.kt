@@ -21,7 +21,7 @@ class TransactionViewModelFactory(
         }
 
         if (modelClass.isAssignableFrom(TransactionListViewModel::class.java)) {
-            return TransactionListViewModel(transactionRepo) as T
+            return TransactionListViewModel(transactionRepo, categoryRepo) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class")

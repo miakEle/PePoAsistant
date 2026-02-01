@@ -12,7 +12,7 @@ class TransactionListItemDiffCallBack : DiffUtil.ItemCallback<TransactionListIte
                 old.date == new.date
 
             old is TransactionListItem.TransactionRow && new is TransactionListItem.TransactionRow ->
-                old.transaction.id == new.transaction.id
+                old.transactionUi.id == new.transactionUi.id
 
             else -> false
         }

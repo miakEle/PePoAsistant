@@ -48,7 +48,7 @@ class TransactionListAdapter() :
         when (val item = getItem(position)) {
             is TransactionListItem.MonthHeader -> (holder as MonthHeaderVH).bind(item)
             is TransactionListItem.DayHeader -> (holder as DayHeaderVH).bind(item)
-            is TransactionListItem.TransactionRow -> (holder as TransactionVH).bind(item.transaction)
+            is TransactionListItem.TransactionRow -> (holder as TransactionVH).bind(item.transactionUi)
         }
     }
 
@@ -72,8 +72,8 @@ class TransactionListAdapter() :
     }
 
     class TransactionVH(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(t: Transaction) {
-            itemView.findViewById<TextView>(R.id.itemTitle).text = t.categoryId.toString()
+        fun bind(t: TransactionUi) {
+            itemView.findViewById<TextView>(R.id.itemTitle).text = t.categoryName
             itemView.findViewById<TextView>(R.id.itemSubtitle).text = t.note
             itemView.findViewById<TextView>(R.id.itemValue).text = t.amount.toString()
 
