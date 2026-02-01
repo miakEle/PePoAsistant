@@ -10,7 +10,7 @@ import androidx.room.TypeConverters
         TransactionEntity::class,
         CategoryEntity::class
                ],
-    version = 4, exportSchema = false
+    version = 5, exportSchema = false
 )
 @TypeConverters(Converters::class)
 

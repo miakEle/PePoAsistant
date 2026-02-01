@@ -11,7 +11,7 @@ data class TransactionEntity(
     val id: Long = 0,
     val categoryId: Long,
     val amount: Double,
-    val date: LocalDate,// room 2,5+ -> LocalDate by TypeConverter
+    val date: Long,// room 2,5+ -> LocalDate by TypeConverter
     val note: String?
 ) {
 }

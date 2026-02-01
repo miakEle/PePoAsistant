@@ -9,15 +9,14 @@ import java.time.LocalDate
 
 class Converters {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
-    fun fromString(value: String?): LocalDate? =
-        value?.let { LocalDate.parse(it) }
-
+    fun localDateToLong(date: LocalDate?): Long? =
+        date?.toEpochDay()
 
     @TypeConverter
-    fun localDateToString(date: LocalDate?): String? =
-        date?.toString()
+    fun longToLocalDate(value: Long?): LocalDate? =
+        value?.let { LocalDate.ofEpochDay(it) }
+
 
     @TypeConverter
     fun fromEnum(value: SuperCategory): String = value.name
