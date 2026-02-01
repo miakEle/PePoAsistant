@@ -19,6 +19,7 @@ import com.example.pepoasistant.data.DatabaseProvider
 import com.example.pepoasistant.data.TransactionRepositoryImp
 import com.example.pepoasistant.databinding.FragmentTransactionInputBinding
 import com.example.pepoasistant.domain.entities.TypeOfCategory
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class TransactionInputFragment : Fragment() {
@@ -58,18 +59,27 @@ class TransactionInputFragment : Fragment() {
         }
         binding.categoryGrid.adapter = adapter
 
+        binding.cardExpense.isChecked = true
+        binding.cardIncome.isChecked = false
+
         binding.cardExpense.setOnClickListener {
             binding.cardExpense.isChecked = true
             binding.cardIncome.isChecked = false
+            viewModel.selectType(TypeOfCategory.EXPENSE)
         }
 
         binding.cardIncome.setOnClickListener {
             binding.cardIncome.isChecked = true
             binding.cardExpense.isChecked = false
+            viewModel.selectType(TypeOfCategory.INCOME)
         }
 
 
-        viewModel.getAllCategoriesByType(TypeOfCategory.EXPENSE)
+        lifecycleScope.launch {
+            viewModel.typeOfCategory.collect {
+                viewModel.getAllCategoriesByType()
+            }
+        }
 
         lifecycleScope.launchWhenStarted {
             viewModel.state.collect { categories ->
