@@ -8,7 +8,7 @@ fun TransactionEntity.toDomain(): Transaction =
         id = id,
         categoryId = categoryId,
         amount = amount,
-        date = LocalDate.ofEpochDay(date),
+        date = date,
         note = note
     )
 
@@ -17,6 +17,6 @@ fun Transaction.toEntity(): TransactionEntity =
         id = id,
         categoryId = categoryId,
         amount = amount,
-        date = date.toEpochDay(),
+        date = date,
         note = note
     )
