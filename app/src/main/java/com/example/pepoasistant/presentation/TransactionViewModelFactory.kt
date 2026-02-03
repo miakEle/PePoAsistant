@@ -17,11 +17,14 @@ class TransactionViewModelFactory(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {
-            return TransactionViewModel(transactionRepo, categoryRepo,mapper) as T
+            return TransactionViewModel(transactionRepo, categoryRepo, mapper) as T
         }
 
         if (modelClass.isAssignableFrom(TransactionListViewModel::class.java)) {
             return TransactionListViewModel(transactionRepo, categoryRepo) as T
+        }
+        if (modelClass.isAssignableFrom(StatisticsViewModel::class.java)) {
+            return StatisticsViewModel(transactionRepo, categoryRepo) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class")

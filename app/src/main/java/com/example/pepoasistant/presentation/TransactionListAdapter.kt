@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pepoasistant.R
 import com.example.pepoasistant.domain.entities.Transaction
+import com.google.common.io.Resources
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
@@ -73,6 +74,12 @@ class TransactionListAdapter() :
 
     class TransactionVH(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(t: TransactionUi) {
+            itemView.findViewById<ImageView>(R.id.itemIcon).setImageResource(itemView.resources.getIdentifier(
+                t.categoryIcon,
+                "drawable",
+                itemView.context.packageName
+            ))
+            itemView.findViewById<ImageView>(R.id.itemIcon).setBackgroundColor(t.categoryColor.toInt())
             itemView.findViewById<TextView>(R.id.itemTitle).text = t.categoryName
             itemView.findViewById<TextView>(R.id.itemSubtitle).text = t.note
             itemView.findViewById<TextView>(R.id.itemValue).text = t.amount.toString()
