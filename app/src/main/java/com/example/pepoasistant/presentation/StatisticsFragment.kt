@@ -7,6 +7,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pepoasistant.R
 import com.example.pepoasistant.data.CategoryRepositoryImp
 import com.example.pepoasistant.data.DatabaseProvider
@@ -34,6 +36,13 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
         val pieChartView = view.findViewById<PieChart>(R.id.pieChart)
 
+        val adapter = PieSliceAdapter()
+
+        val recycler = view.findViewById<RecyclerView>(R.id.pieChart_info)
+        recycler.adapter = adapter
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.pieData.collect { slices ->
@@ -49,6 +58,7 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
                     pieChartView.data = pieData
                     pieChartView.invalidate()
+                    adapter.submitList(slices)
                 }
             }
         }
