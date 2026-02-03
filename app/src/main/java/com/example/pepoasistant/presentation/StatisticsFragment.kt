@@ -1,5 +1,6 @@
 package com.example.pepoasistant.presentation
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -57,6 +58,24 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
                     val pieData = PieData(dataSet)
 
                     pieChartView.data = pieData
+                    pieChartView.apply {
+                        description.isEnabled = false
+                        setDrawEntryLabels(false)
+                        legend.isEnabled = false
+                        dataSet.setDrawValues(false)
+                        animateY(400)
+                        isDrawHoleEnabled = true
+                        holeRadius = 55f
+                        transparentCircleRadius = 60f
+                        setHoleColor(Color.TRANSPARENT)
+                        setDrawEntryLabels(false)
+                        legend.isEnabled = false
+                        isRotationEnabled = false
+                        isHighlightPerTapEnabled = false
+                    }
+
+                    pieChartView.invalidate()
+
                     pieChartView.invalidate()
                     adapter.submitList(slices)
                 }

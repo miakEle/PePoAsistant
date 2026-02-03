@@ -6,24 +6,25 @@
 
     <ImageView
         android:id="@+id/itemIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/shape_oval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/oval_shape_piechart_info"
         android:contentDescription="@string/app_name"
         android:padding="8dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_food" />
+        android:layout_gravity="center"/>
 
     <TextView
         android:id="@+id/itemTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="Название"
         android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:layout_gravity="center"/>
 
     <!-- Значение справа -->
     <TextView
@@ -32,8 +33,9 @@
         android:layout_height="wrap_content"
         android:text="20%"
         android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:textStyle="bold"
-        android:padding="8dp"/>
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

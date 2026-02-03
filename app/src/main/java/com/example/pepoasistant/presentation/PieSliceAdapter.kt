@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.pepoasistant.databinding.ItemPiechartInfoBinding
-import com.google.protobuf.Internal
 
-class PieSliceAdapter: ListAdapter<PieSliceUi, PieSliceViewHolder>(PieSliceUiDiffCallBack()) {
+class PieSliceAdapter : ListAdapter<PieSliceUi, PieSliceViewHolder>(PieSliceUiDiffCallBack()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

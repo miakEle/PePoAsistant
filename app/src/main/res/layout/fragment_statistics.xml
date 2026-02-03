@@ -50,16 +50,17 @@
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pieChart"
                 android:layout_width="200dp"
-                android:layout_height="240dp"
-                android:layout_marginTop="16dp" />
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/pieChart_info"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:nestedScrollingEnabled="false"
-                android:overScrollMode="never" />
+                android:overScrollMode="never"
+                android:layout_gravity="center"
+                android:layout_margin="20dp"/>
         </LinearLayout>
 
 
