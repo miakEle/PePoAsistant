@@ -43,6 +43,12 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
+       val categoryAdapter = CategoryStatisticsAdapter()
+        val categoryRecycler = view.findViewById<RecyclerView>(R.id.categoryRecycler)
+
+        categoryRecycler.adapter = categoryAdapter
+        categoryRecycler.layoutManager = LinearLayoutManager(requireContext())
+
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -81,5 +87,12 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.categoryStatisticsData.collect { list ->
+                categoryAdapter.submitList(list)
+            }
+        }
+
     }
 }

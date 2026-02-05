@@ -64,4 +64,38 @@ class StatisticsViewModel(
                 )
             )
         }
+
+    val categoryStatisticsData: Flow<List<CategoryStatisticsUi>> =
+        combine(
+            repository.getAllTransactions(),
+            categoryRepository.getAllCategories()
+        ) { transactions, categories ->
+
+            val categoryMap = categories.associateBy { it.id }
+
+            // Only EXPENSES (recommended)
+            val expenseTransactions = transactions.filter {
+                categoryMap[it.categoryId]?.type == TypeOfCategory.EXPENSE
+            }
+
+            val totalAmount = expenseTransactions.sumOf { it.amount }.coerceAtLeast(1.0)
+
+            expenseTransactions
+                .groupBy { it.categoryId }
+                .map { (categoryId, listOfTransactions) ->
+
+                    val category = categoryMap[categoryId]!!
+                    val sum = listOfTransactions.sumOf { it.amount }
+
+                    CategoryStatisticsUi(
+                        categoryName = category.name,
+                        categoryIcon = category.icon,
+                        amount = sum,
+                        percents = (sum / totalAmount).toFloat(),
+                        color = category.color.toInt()
+                    )
+                }
+                .sortedByDescending { it.amount } // FIXED: now sorting works
+        }
+
 }
