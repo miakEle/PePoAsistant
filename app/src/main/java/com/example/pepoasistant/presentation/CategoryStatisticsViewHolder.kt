@@ -1,11 +1,12 @@
 package com.example.pepoasistant.presentation
 
+import android.content.res.ColorStateList
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pepoasistant.databinding.ItemCategotyStatisticsBinding
 
 class CategoryStatisticsViewHolder(private val binding: ItemCategotyStatisticsBinding): RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(categoryStatisticsUi:CategoryStatisticsUi, maxWight: Int, maxAmount: Double)= with(binding){
+    fun bind(categoryStatisticsUi:CategoryStatisticsUi, maxAmount: Double)= with(binding){
         categoryName.text = categoryStatisticsUi.categoryName
 
         val ctx = root.context
@@ -22,6 +23,8 @@ class CategoryStatisticsViewHolder(private val binding: ItemCategotyStatisticsBi
 
         categoryAmount.text = categoryStatisticsUi.amount.toString()
         categoryPercents.text = String.format("%.0f%%", categoryStatisticsUi.percents * 100)
-        categoryBar.setBackgroundColor(categoryStatisticsUi.color)
+
+        progressBar.setProgress(((categoryStatisticsUi.amount / maxAmount)*100).toInt())
+        progressBar.progressTintList = ColorStateList.valueOf(categoryStatisticsUi.color)
     }
 }

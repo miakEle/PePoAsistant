@@ -8,8 +8,6 @@ import com.example.pepoasistant.databinding.ItemCategotyStatisticsBinding
 class CategoryStatisticsAdapter() : ListAdapter<CategoryStatisticsUi, CategoryStatisticsViewHolder>(
     CategoryStatisticsDiffCallBack()
 ) {
-
-    private var maxWight = 0
     private var maxAmount: Double = 1.0
 
     override fun onCreateViewHolder(
@@ -21,11 +19,6 @@ class CategoryStatisticsAdapter() : ListAdapter<CategoryStatisticsUi, CategorySt
             parent,
             false
         )
-        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
-            if (maxWight == 0) {
-                maxWight = binding.root.width
-            }
-        }
 
         return CategoryStatisticsViewHolder(binding)
     }
@@ -35,7 +28,7 @@ class CategoryStatisticsAdapter() : ListAdapter<CategoryStatisticsUi, CategorySt
         position: Int
     ) {
 
-        holder.bind(getItem(position), maxWight, maxAmount)
+        holder.bind(getItem(position), maxAmount)
 
 
     }
