@@ -14,8 +14,8 @@ class CategoryViewHolder(
         categoryIcon.setImageResource(item.icon)
 
         if (item.isSelected){
-            categoryIcon.setColorFilter(ContextCompat.getColor(root.context, R.color.olive))
-            categoryName.setTextColor(ContextCompat.getColor(root.context, R.color.olive))
+            categoryIcon.setColorFilter(ContextCompat.getColor(root.context, R.color.green_300))
+            categoryName.setTextColor(ContextCompat.getColor(root.context, R.color.green_300))
         } else {
             categoryIcon.setColorFilter(ContextCompat.getColor(root.context, R.color.white))
             categoryName.setTextColor(ContextCompat.getColor(root.context, R.color.white))

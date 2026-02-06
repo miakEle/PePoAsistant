@@ -21,6 +21,7 @@ import com.example.pepoasistant.databinding.FragmentTransactionInputBinding
 import com.example.pepoasistant.domain.entities.TypeOfCategory
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import kotlin.properties.Delegates
 
 class TransactionInputFragment : Fragment() {
 
@@ -31,6 +32,7 @@ class TransactionInputFragment : Fragment() {
     private lateinit var viewModel: TransactionViewModel
 
     private var selectedCategoryId: Long? = null
+
     private var selectedDate: LocalDate = LocalDate.now()
 
     override fun onCreateView(
@@ -55,6 +57,7 @@ class TransactionInputFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[TransactionViewModel::class.java]
 
         val adapter = CategoryAdapter { category ->
+            selectedCategoryId = category.id
             viewModel.onCategoryClicked(category.id)
         }
         binding.categoryGrid.adapter = adapter
@@ -106,12 +109,13 @@ class TransactionInputFragment : Fragment() {
         }
 
         binding.saveButton.setOnClickListener {
-//            val categoryId = selectedCategoryId ?: return@setOnClickListener
+            if (!validateInputs()) return@setOnClickListener
             val amount =
                 binding.amountInput.text.toString().toDoubleOrNull() ?: return@setOnClickListener
             val note = binding.noteInput.text?.toString()
 
             viewModel.insert(
+                categoryId = selectedCategoryId!!,
                 amount = amount,
                 date = selectedDate,
                 note = note
@@ -141,6 +145,26 @@ class TransactionInputFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
+
+    private fun validateInputs(): Boolean {
+        if (selectedCategoryId == null) {
+            binding.categoryError.visibility = View.VISIBLE
+            binding.categoryError.text = "Please select a category"
+            return false
+        } else {
+            binding.categoryError.visibility = View.GONE
+        }
+
+        val amountText = binding.amountInput.text.toString()
+        val amount = amountText.toDoubleOrNull()
+        if (amount == null || amount <= 0) {
+            binding.amountInput.error = "Enter a valid amount"
+            return false
+        }
+
+        return true
+    }
+
 
 
 }
