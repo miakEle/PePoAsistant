@@ -22,7 +22,6 @@
         android:text="Название"
         android:textColor="?attr/colorOnSurface"
         android:textSize="14sp"
-        android:textStyle="bold"
         android:padding="8dp"
         android:layout_gravity="center"/>
 

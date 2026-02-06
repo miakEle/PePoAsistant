@@ -71,6 +71,8 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         val items = listOf("KULUT", "TULOT")
         val adapterDropDown = ArrayAdapter(requireContext(), R.layout.dropdown_item, items)
         binding.categoryDropdown.setAdapter(adapterDropDown)
+        binding.categoryDropdown.setText(items.first(), false)
+
 
 
 
