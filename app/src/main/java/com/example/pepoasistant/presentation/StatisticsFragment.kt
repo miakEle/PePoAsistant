@@ -2,7 +2,10 @@ package com.example.pepoasistant.presentation
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +17,8 @@ import com.example.pepoasistant.R
 import com.example.pepoasistant.data.CategoryRepositoryImp
 import com.example.pepoasistant.data.DatabaseProvider
 import com.example.pepoasistant.data.TransactionRepositoryImp
+import com.example.pepoasistant.databinding.FragmentStatisticsBinding
+import com.example.pepoasistant.databinding.FragmentTransactionInputBinding
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -22,7 +27,21 @@ import kotlinx.coroutines.launch
 
 class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
+    private var _binding: FragmentStatisticsBinding? = null
+
+    val binding: FragmentStatisticsBinding
+        get() = _binding ?: throw RuntimeException("FragmentWelcomeBinding == null")
+
     private lateinit var viewModel: StatisticsViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentStatisticsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,6 +67,11 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
         categoryRecycler.adapter = categoryAdapter
         categoryRecycler.layoutManager = LinearLayoutManager(requireContext())
+
+        val items = listOf("KULUT", "TULOT")
+        val adapterDropDown = ArrayAdapter(requireContext(), R.layout.dropdown_item, items)
+        binding.categoryDropdown.setAdapter(adapterDropDown)
+
 
 
         viewLifecycleOwner.lifecycleScope.launch {
