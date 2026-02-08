@@ -1,6 +1,7 @@
 package com.example.pepoasistant.presentation
 
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +19,6 @@ import com.example.pepoasistant.data.CategoryRepositoryImp
 import com.example.pepoasistant.data.DatabaseProvider
 import com.example.pepoasistant.data.TransactionRepositoryImp
 import com.example.pepoasistant.databinding.FragmentStatisticsBinding
-import com.example.pepoasistant.databinding.FragmentTransactionInputBinding
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -62,7 +62,7 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
-       val categoryAdapter = CategoryStatisticsAdapter()
+        val categoryAdapter = CategoryStatisticsAdapter()
         val categoryRecycler = view.findViewById<RecyclerView>(R.id.categoryRecycler)
 
         categoryRecycler.adapter = categoryAdapter
@@ -73,7 +73,35 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         binding.categoryDropdown.setAdapter(adapterDropDown)
         binding.categoryDropdown.setText(items.first(), false)
 
+        val periodAdapter = PeriodAdapter(
+            onPeriodClick = {
+                viewModel.selectItem(it)
+            },
+            onAddMoreClick = {
+                viewModel.loadMore()
+            }
+        )
 
+        binding.periodRecycler.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+
+        binding.periodRecycler.adapter = periodAdapter
+
+        binding.periodRecycler.addItemDecoration(HorizontalSpaceDecoration(24))
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.periodItems.collect  {list ->
+                periodAdapter.submitList(list)
+            }
+        }
+
+        class HorizontalSpaceDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                outRect.right = space
+            }
+        }
 
 
         viewLifecycleOwner.lifecycleScope.launch {
