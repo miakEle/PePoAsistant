@@ -3,7 +3,8 @@
     android:id="@+id/card"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    >
 
     <TextView
         android:id="@+id/cardTitle"
@@ -11,6 +12,7 @@
         android:layout_height="wrap_content"
         android:text="Helmi 2025"
         android:textSize="16dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:padding="6dp"/>
 
 </com.google.android.material.card.MaterialCardView>

@@ -43,7 +43,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_expense"
+                android:id="@+id/card_kuukausi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -64,7 +64,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_income"
+                android:id="@+id/card_vuosi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -96,7 +96,8 @@
             android:id="@+id/periodRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"/></LinearLayout>
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"/></LinearLayout>
 
         <!-- Круговая диаграмма -->
         <LinearLayout

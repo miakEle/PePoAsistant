@@ -90,16 +90,20 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
         binding.periodRecycler.addItemDecoration(HorizontalSpaceDecoration(24))
 
+        binding.cardKuukausi.setOnClickListener {
+            binding.cardKuukausi.isChecked = true
+            binding.cardVuosi.isChecked = false
+        }
+
+        binding.cardVuosi.setOnClickListener {
+            binding.cardVuosi.isChecked = true
+            binding.cardKuukausi.isChecked = false
+        }
+
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.periodItems.collect  {list ->
                 periodAdapter.submitList(list)
-            }
-        }
-
-        class HorizontalSpaceDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                outRect.right = space
             }
         }
 
