@@ -7,7 +7,6 @@ import com.example.pepoasistant.domain.repositories.CategoryRepository
 import com.example.pepoasistant.domain.repositories.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import java.time.LocalDate
@@ -20,6 +19,12 @@ class StatisticsViewModel(
 
     private val _periodItems = MutableStateFlow<List<PeriodListItem>>(emptyList())
     val periodItems = _periodItems.asStateFlow()
+
+    enum class PeriodMode {
+        MONTH, YEAR
+    }
+
+    private var mode = PeriodMode.MONTH
 
     private val monthsNames = listOf(
         "tammi",
@@ -43,10 +48,25 @@ class StatisticsViewModel(
         loadMore()
     }
 
-    fun loadMore()
-    {
+    fun switchToMonth() {
+        mode = PeriodMode.MONTH
+        offsets.clear()
+        offsets.add(0)
+        selectedOffset = 0
+        loadMore()
+    }
+
+    fun switchToYear() {
+        mode = PeriodMode.YEAR
+        offsets.clear()
+        offsets.add(0)
+        selectedOffset = 0
+        loadMore()
+    }
+
+    fun loadMore() {
         val lastOffset = offsets.last()
-        for (i in 1 until 5){
+        for (i in 1 until 5) {
             offsets.add(lastOffset - i)
         }
         updateList()
@@ -56,20 +76,34 @@ class StatisticsViewModel(
         val now = LocalDate.now()
 
         val list = offsets.map { offset ->
-            val date = now.plusMonths(offset.toLong())
-            PeriodListItem.Period(
-                offset,
-                "${monthsNames[date.monthValue - 1]} ${date.year}",
-                date.year,
-                date.monthValue,
-                selectedOffset == offset
-            )
+            when (mode) {
+                PeriodMode.MONTH -> {
+                    val date = now.plusMonths(offset.toLong())
+                    PeriodListItem.Period(
+                        offset,
+                        "${monthsNames[date.monthValue - 1]} ${date.year}",
+                        date.year,
+                        date.monthValue,
+                        selectedOffset == offset
+                    )
+                }
+                PeriodMode.YEAR -> {
+                    val date = now.plusYears(offset.toLong())
+                    PeriodListItem.Period(
+                        offset,
+                        "${date.year}",
+                        date.year,
+                        null,
+                        selectedOffset == offset
+                    )
+                }
+            }
         } + PeriodListItem.AddMore
 
         _periodItems.value = list
     }
 
-    fun selectItem (item: PeriodListItem.Period){
+    fun selectItem(item: PeriodListItem.Period) {
         selectedOffset = item.offset
         updateList()
     }

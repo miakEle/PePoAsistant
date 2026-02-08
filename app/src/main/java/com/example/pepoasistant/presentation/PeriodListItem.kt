@@ -5,7 +5,7 @@ sealed class PeriodListItem {
         val offset: Int,
         val label: String,
         val year: Int,
-        val month: Int,
+        val month: Int?,
         val selected: Boolean = false
     ) : PeriodListItem()
 

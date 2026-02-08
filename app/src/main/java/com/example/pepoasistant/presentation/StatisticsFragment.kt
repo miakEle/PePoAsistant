@@ -93,11 +93,13 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         binding.cardKuukausi.setOnClickListener {
             binding.cardKuukausi.isChecked = true
             binding.cardVuosi.isChecked = false
+            viewModel.switchToMonth()
         }
 
         binding.cardVuosi.setOnClickListener {
             binding.cardVuosi.isChecked = true
             binding.cardKuukausi.isChecked = false
+            viewModel.switchToYear()
         }
 
 
