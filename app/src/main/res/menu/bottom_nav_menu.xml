@@ -4,7 +4,7 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_left_bottom_nav"
-        android:title="Главная" />
+        android:title="KAAVIOT" />
 
     <item
         android:id="@+id/nav_fab"
@@ -15,6 +15,6 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_right_bottom_nav"
-        android:title="Профиль" />
+        android:title="TAPAHTUMAT" />
 
 </menu>

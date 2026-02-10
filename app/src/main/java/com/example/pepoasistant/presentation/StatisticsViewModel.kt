@@ -43,7 +43,7 @@ class StatisticsViewModel(
 
 
     init {
-        updateList()
+        loadMore()
     }
 
     fun selectTransactionType(type: TransactionType) {

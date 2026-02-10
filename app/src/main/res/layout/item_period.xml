@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/card"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/cardTitle"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Helmi 2025"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        android:padding="6dp"/>
+        android:layout_gravity="center"
+        app:cardForegroundColor="@android:color/transparent"
+        app:checkedIcon="@null"
+        app:checkedIconTint="@null"
+        app:strokeColor="@android:color/transparent"
+        app:strokeWidth="0dp">
 
-</com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:id="@+id/cardTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:padding="6dp"
+            android:text="Helmi 2025"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+    </com.google.android.material.card.MaterialCardView>
+    <View
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"/>
+</LinearLayout>

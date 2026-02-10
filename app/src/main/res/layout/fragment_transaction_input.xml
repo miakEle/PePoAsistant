@@ -95,7 +95,6 @@
                 android:id="@+id/amountLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Сумма"
                 app:boxStrokeColor="@color/text_input_stroke_selector"
                 app:boxStrokeWidth="1dp"
                 app:boxStrokeWidthFocused="4dp"
@@ -115,7 +114,7 @@
                 android:id="@+id/dateLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Дата"
+                android:hint="Päivämäärä"
                 app:boxStrokeColor="@color/text_input_stroke_selector"
                 app:boxStrokeWidth="2dp"
                 app:boxStrokeWidthFocused="4dp">
@@ -154,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/olive"
-                android:text="Сохранить"
+                android:text="TALLENNA"
                 android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>
