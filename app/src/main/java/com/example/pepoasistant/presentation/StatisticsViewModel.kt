@@ -2,6 +2,7 @@ package com.example.pepoasistant.presentation
 
 import androidx.lifecycle.ViewModel
 import com.example.pepoasistant.domain.entities.SuperCategory
+import com.example.pepoasistant.domain.entities.Transaction
 import com.example.pepoasistant.domain.entities.TypeOfCategory
 import com.example.pepoasistant.domain.repositories.CategoryRepository
 import com.example.pepoasistant.domain.repositories.TransactionRepository
@@ -37,9 +38,18 @@ class StatisticsViewModel(
     private val _periodItems = MutableStateFlow<List<PeriodListItem>>(emptyList())
     val periodItems = _periodItems.asStateFlow()
 
+    private val _selectedType = MutableStateFlow(TransactionType.EXPENSE)
+    val selectedType = _selectedType.asStateFlow()
+
+
     init {
         updateList()
     }
+
+    fun selectTransactionType(type: TransactionType) {
+        _selectedType.value = type
+    }
+
 
     // -----------------------------
     // SWITCH MODES
@@ -120,30 +130,46 @@ class StatisticsViewModel(
     // -----------------------------
     // FILTERED TRANSACTIONS
     // -----------------------------
-    private val filteredTransactions: Flow<List<com.example.pepoasistant.domain.entities.Transaction>> =
+    private val filteredTransactions =
         combine(
             repository.getAllTransactions(),
+            categoryRepository.getAllCategories(),
             selectedOffset,
-            mode
-        ) { transactions, offset, mode ->
+            mode,
+            selectedType
+        ) { transactions, categories, offset, mode, type ->
 
+            val categoryMap = categories.associateBy { it.id }
+
+            // 1. Filter by date
             val now = LocalDate.now()
             val target = when (mode) {
                 PeriodMode.MONTH -> now.plusMonths(offset.toLong())
                 PeriodMode.YEAR -> now.plusYears(offset.toLong())
             }
 
-            transactions.filter { tx ->
-                when (mode) {
-                    PeriodMode.MONTH ->
-                        tx.date.year == target.year &&
-                                tx.date.monthValue == target.monthValue
-
-                    PeriodMode.YEAR ->
-                        tx.date.year == target.year
+            val dateFiltered = when (mode) {
+                PeriodMode.MONTH -> transactions.filter {
+                    it.date.year == target.year &&
+                            it.date.monthValue == target.monthValue
+                }
+                PeriodMode.YEAR -> transactions.filter {
+                    it.date.year == target.year
                 }
             }
+
+            // 2. Filter by EXPENSE / INCOME
+            val typeFiltered = dateFiltered.filter { tx ->
+                val category = categoryMap[tx.categoryId]
+                when (type) {
+                    TransactionType.EXPENSE -> category?.type == TypeOfCategory.EXPENSE
+                    TransactionType.INCOME -> category?.type == TypeOfCategory.INCOME
+                }
+            }
+
+            typeFiltered
         }
+
 
     // -----------------------------
     // PIE DATA
@@ -151,36 +177,54 @@ class StatisticsViewModel(
     val pieData: Flow<List<PieSliceUi>> =
         combine(
             filteredTransactions,
-            categoryRepository.getAllCategories()
-        ) { transactions, categories ->
+            categoryRepository.getAllCategories(),
+            selectedType
+        ) { transactions, categories, type ->
 
             val categoryMap = categories.associateBy { it.id }
 
-            val expenses = transactions.filter {
-                categoryMap[it.categoryId]?.type == TypeOfCategory.EXPENSE
-            }
+            val total = transactions.sumOf { it.amount }.takeIf { it > 0 } ?: 1.0
 
-            val total = expenses.sumOf { it.amount }.takeIf { it > 0 } ?: 1.0
+            when (type) {
 
-            var wants = 0.0
-            var needs = 0.0
-            var savings = 0.0
+                TransactionType.EXPENSE -> {
+                    var wants = 0.0
+                    var needs = 0.0
+                    var savings = 0.0
 
-            expenses.forEach { tx ->
-                when (categoryMap[tx.categoryId]?.superCategory) {
-                    SuperCategory.WANTS -> wants += tx.amount
-                    SuperCategory.NEEDS -> needs += tx.amount
-                    SuperCategory.SAVINGS -> savings += tx.amount
-                    else -> Unit
+                    transactions.forEach { tx ->
+                        when (categoryMap[tx.categoryId]?.superCategory) {
+                            SuperCategory.WANTS -> wants += tx.amount
+                            SuperCategory.NEEDS -> needs += tx.amount
+                            SuperCategory.SAVINGS -> savings += tx.amount
+                            else -> Unit
+                        }
+                    }
+
+                    listOf(
+                        PieSliceUi("Needs", (needs / total).toFloat(), needs, 0xFFDCE775.toInt()),
+                        PieSliceUi("Wants", (wants / total).toFloat(), wants, 0xFFF06292.toInt()),
+                        PieSliceUi("Savings", (savings / total).toFloat(), savings, 0xFF4DB6AC.toInt())
+                    )
+                }
+
+                TransactionType.INCOME -> {
+                    var salary = 0.0
+
+                    transactions.forEach { tx ->
+                        when (categoryMap[tx.categoryId]?.superCategory) {
+                            SuperCategory.SALARY -> salary += tx.amount
+                            else -> Unit
+                        }
+                    }
+
+                    listOf(
+                        PieSliceUi("Salary", 1f, salary, 0xFF81C784.toInt())
+                    )
                 }
             }
-
-            listOf(
-                PieSliceUi("Needs", (needs / total).toFloat(), needs, 0xFFDCE775.toInt()),
-                PieSliceUi("Wants", (wants / total).toFloat(), wants, 0xFFF06292.toInt()),
-                PieSliceUi("Savings", (savings / total).toFloat(), savings, 0xFF4DB6AC.toInt())
-            )
         }
+
 
     // -----------------------------
     // CATEGORY STATISTICS
@@ -193,13 +237,9 @@ class StatisticsViewModel(
 
             val categoryMap = categories.associateBy { it.id }
 
-            val expenses = transactions.filter {
-                categoryMap[it.categoryId]?.type == TypeOfCategory.EXPENSE
-            }
+            val total = transactions.sumOf { it.amount }.takeIf { it > 0 } ?: 1.0
 
-            val total = expenses.sumOf { it.amount }.takeIf { it > 0 } ?: 1.0
-
-            expenses
+            transactions
                 .groupBy { it.categoryId }
                 .map { (id, list) ->
                     val category = categoryMap[id]!!
@@ -219,4 +259,9 @@ class StatisticsViewModel(
     enum class PeriodMode {
         YEAR, MONTH
     }
+
+    enum class TransactionType {
+        EXPENSE, INCOME
+    }
+
 }

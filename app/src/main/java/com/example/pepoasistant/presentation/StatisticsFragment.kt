@@ -72,6 +72,15 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         val adapterDropDown = ArrayAdapter(requireContext(), R.layout.dropdown_item, items)
         binding.categoryDropdown.setAdapter(adapterDropDown)
         binding.categoryDropdown.setText(items.first(), false)
+        binding.categoryDropdown.setOnItemClickListener { parent, view, position, id ->
+            val selected = parent.getItemAtPosition(position) as String
+
+            when (selected) {
+                "KULUT" -> viewModel.selectTransactionType(StatisticsViewModel.TransactionType.EXPENSE)
+                "TULOT" -> viewModel.selectTransactionType(StatisticsViewModel.TransactionType.INCOME)
+            }
+        }
+
 
         val periodAdapter = PeriodAdapter(
             onPeriodClick = {
@@ -89,6 +98,9 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         binding.periodRecycler.adapter = periodAdapter
 
         binding.periodRecycler.addItemDecoration(HorizontalSpaceDecoration(24))
+
+        binding.cardVuosi.isChecked = false
+        binding.cardKuukausi.isChecked = true
 
         binding.cardKuukausi.setOnClickListener {
             binding.cardKuukausi.isChecked = true
