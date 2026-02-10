@@ -111,9 +111,7 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.pieData.collect { slices ->
-
                     val entries = slices.map { slice ->
                         PieEntry(slice.amount.toFloat(), slice.categoryName)
                     }
@@ -145,7 +143,6 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
                     pieChartView.invalidate()
                     adapter.submitList(slices)
                 }
-            }
         }
 
         lifecycleScope.launch {

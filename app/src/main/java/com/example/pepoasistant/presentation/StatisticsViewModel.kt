@@ -5,191 +5,218 @@ import com.example.pepoasistant.domain.entities.SuperCategory
 import com.example.pepoasistant.domain.entities.TypeOfCategory
 import com.example.pepoasistant.domain.repositories.CategoryRepository
 import com.example.pepoasistant.domain.repositories.TransactionRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import java.time.LocalDate
 
 class StatisticsViewModel(
     private val repository: TransactionRepository,
-    private val categoryRepository: CategoryRepository,
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
+    private val monthsNames = listOf(
+        "tammi", "helmi", "maalis", "huhti", "touko", "kesä",
+        "heinä", "elo", "syys", "loka", "marras", "joulu"
+    )
 
+    // -----------------------------
+    // PERIOD MODE (MONTH / YEAR)
+    // -----------------------------
+    private val _mode = MutableStateFlow(PeriodMode.MONTH)
+    val mode = _mode.asStateFlow()
+
+    // -----------------------------
+    // OFFSET (month or year offset)
+    // -----------------------------
+    private val _selectedOffset = MutableStateFlow(0)
+    val selectedOffset = _selectedOffset.asStateFlow()
+
+    // -----------------------------
+    // PERIOD LIST ITEMS FOR UI
+    // -----------------------------
+    private val offsets = mutableListOf(0)
     private val _periodItems = MutableStateFlow<List<PeriodListItem>>(emptyList())
     val periodItems = _periodItems.asStateFlow()
 
-    enum class PeriodMode {
-        MONTH, YEAR
-    }
-
-    private var mode = PeriodMode.MONTH
-
-    private val monthsNames = listOf(
-        "tammi",
-        "helmi",
-        "maalis",
-        "huhti",
-        "touko",
-        "kesä",
-        "heinä",
-        "elo",
-        "syys",
-        "loka",
-        "marras",
-        "joulu"
-    )
-
-    private val offsets = mutableListOf(0)
-    private var selectedOffset = 0
-
     init {
-        loadMore()
-    }
-
-    fun switchToMonth() {
-        mode = PeriodMode.MONTH
-        offsets.clear()
-        offsets.add(0)
-        selectedOffset = 0
-        loadMore()
-    }
-
-    fun switchToYear() {
-        mode = PeriodMode.YEAR
-        offsets.clear()
-        offsets.add(0)
-        selectedOffset = 0
-        loadMore()
-    }
-
-    fun loadMore() {
-        val lastOffset = offsets.last()
-        for (i in 1 until 5) {
-            offsets.add(lastOffset - i)
-        }
         updateList()
     }
 
+    // -----------------------------
+    // SWITCH MODES
+    // -----------------------------
+    fun switchToMonth() {
+        _mode.value = PeriodMode.MONTH
+        offsets.clear()
+        offsets.add(0)
+        _selectedOffset.value = 0
+        loadMoreMonths()
+    }
+
+    fun switchToYear() {
+        _mode.value = PeriodMode.YEAR
+        offsets.clear()
+        offsets.add(0)
+        _selectedOffset.value = 0
+        loadMoreYears()
+    }
+
+    // -----------------------------
+    // LOAD MORE MONTHS
+    // -----------------------------
+    private fun loadMoreMonths() {
+        val last = offsets.last()
+        for (i in 1..5) offsets.add(last - i)
+        updateList()
+    }
+
+    // -----------------------------
+    // LOAD MORE YEARS
+    // -----------------------------
+    private fun loadMoreYears() {
+        val last = offsets.last()
+        for (i in 1..5) offsets.add(last - i)
+        updateList()
+    }
+
+    fun loadMore() {
+        if (_mode.value == PeriodMode.MONTH) loadMoreMonths()
+        else loadMoreYears()
+    }
+
+    // -----------------------------
+    // UPDATE PERIOD LIST FOR UI
+    // -----------------------------
     private fun updateList() {
         val now = LocalDate.now()
 
         val list = offsets.map { offset ->
-            when (mode) {
-                PeriodMode.MONTH -> {
-                    val date = now.plusMonths(offset.toLong())
-                    PeriodListItem.Period(
-                        offset,
-                        "${monthsNames[date.monthValue - 1]} ${date.year}",
-                        date.year,
-                        date.monthValue,
-                        selectedOffset == offset
-                    )
-                }
-                PeriodMode.YEAR -> {
-                    val date = now.plusYears(offset.toLong())
-                    PeriodListItem.Period(
-                        offset,
-                        "${date.year}",
-                        date.year,
-                        null,
-                        selectedOffset == offset
-                    )
-                }
+            val date = when (_mode.value) {
+                PeriodMode.MONTH -> now.plusMonths(offset.toLong())
+                PeriodMode.YEAR -> now.plusYears(offset.toLong())
             }
+
+            val label = when (_mode.value) {
+                PeriodMode.MONTH -> "${monthsNames[date.monthValue - 1]} ${date.year}"
+                PeriodMode.YEAR -> date.year.toString()
+            }
+
+            PeriodListItem.Period(
+                offset = offset,
+                label = label,
+                year = date.year,
+                month = date.monthValue,
+                selected = offset == _selectedOffset.value
+            )
         } + PeriodListItem.AddMore
 
         _periodItems.value = list
     }
 
     fun selectItem(item: PeriodListItem.Period) {
-        selectedOffset = item.offset
+        _selectedOffset.value = item.offset
         updateList()
     }
 
-    val pieData: Flow<List<PieSliceUi>> =
+    // -----------------------------
+    // FILTERED TRANSACTIONS
+    // -----------------------------
+    private val filteredTransactions: Flow<List<com.example.pepoasistant.domain.entities.Transaction>> =
         combine(
             repository.getAllTransactions(),
+            selectedOffset,
+            mode
+        ) { transactions, offset, mode ->
+
+            val now = LocalDate.now()
+            val target = when (mode) {
+                PeriodMode.MONTH -> now.plusMonths(offset.toLong())
+                PeriodMode.YEAR -> now.plusYears(offset.toLong())
+            }
+
+            transactions.filter { tx ->
+                when (mode) {
+                    PeriodMode.MONTH ->
+                        tx.date.year == target.year &&
+                                tx.date.monthValue == target.monthValue
+
+                    PeriodMode.YEAR ->
+                        tx.date.year == target.year
+                }
+            }
+        }
+
+    // -----------------------------
+    // PIE DATA
+    // -----------------------------
+    val pieData: Flow<List<PieSliceUi>> =
+        combine(
+            filteredTransactions,
             categoryRepository.getAllCategories()
         ) { transactions, categories ->
 
             val categoryMap = categories.associateBy { it.id }
 
-            val expenseTransactions = transactions.filter {
+            val expenses = transactions.filter {
                 categoryMap[it.categoryId]?.type == TypeOfCategory.EXPENSE
             }
 
-            val totalAmount = expenseTransactions.sumOf { it.amount }.coerceAtLeast(1.0)
+            val total = expenses.sumOf { it.amount }.takeIf { it > 0 } ?: 1.0
 
-            var wantsAmount = 0.0
-            var needsAmount = 0.0
-            var savingsAmount = 0.0
+            var wants = 0.0
+            var needs = 0.0
+            var savings = 0.0
 
-            expenseTransactions.forEach { tx ->
-                val category = categoryMap[tx.categoryId] ?: return@forEach
-
-                when (category.superCategory) {
-                    SuperCategory.WANTS -> wantsAmount += tx.amount
-                    SuperCategory.NEEDS -> needsAmount += tx.amount
-                    SuperCategory.SAVINGS -> savingsAmount += tx.amount
+            expenses.forEach { tx ->
+                when (categoryMap[tx.categoryId]?.superCategory) {
+                    SuperCategory.WANTS -> wants += tx.amount
+                    SuperCategory.NEEDS -> needs += tx.amount
+                    SuperCategory.SAVINGS -> savings += tx.amount
                     else -> Unit
                 }
             }
 
             listOf(
-                PieSliceUi(
-                    categoryName = "Needs",
-                    percent = (needsAmount / totalAmount).toFloat(),
-                    amount = needsAmount,
-                    color = 0xFFDCE775.toInt()
-                ),
-                PieSliceUi(
-                    categoryName = "Wants",
-                    percent = (wantsAmount / totalAmount).toFloat(),
-                    amount = wantsAmount,
-                    color = 0xFFF06292.toInt()
-                ),
-                PieSliceUi(
-                    categoryName = "Savings",
-                    percent = (savingsAmount / totalAmount).toFloat(),
-                    amount = savingsAmount,
-                    color = 0xFF4DB6AC.toInt()
-                )
+                PieSliceUi("Needs", (needs / total).toFloat(), needs, 0xFFDCE775.toInt()),
+                PieSliceUi("Wants", (wants / total).toFloat(), wants, 0xFFF06292.toInt()),
+                PieSliceUi("Savings", (savings / total).toFloat(), savings, 0xFF4DB6AC.toInt())
             )
         }
 
+    // -----------------------------
+    // CATEGORY STATISTICS
+    // -----------------------------
     val categoryStatisticsData: Flow<List<CategoryStatisticsUi>> =
         combine(
-            repository.getAllTransactions(),
+            filteredTransactions,
             categoryRepository.getAllCategories()
         ) { transactions, categories ->
 
             val categoryMap = categories.associateBy { it.id }
 
-            // Only EXPENSES (recommended)
-            val expenseTransactions = transactions.filter {
+            val expenses = transactions.filter {
                 categoryMap[it.categoryId]?.type == TypeOfCategory.EXPENSE
             }
 
-            val totalAmount = expenseTransactions.sumOf { it.amount }.coerceAtLeast(1.0)
+            val total = expenses.sumOf { it.amount }.takeIf { it > 0 } ?: 1.0
 
-            expenseTransactions
+            expenses
                 .groupBy { it.categoryId }
-                .map { (categoryId, listOfTransactions) ->
-
-                    val category = categoryMap[categoryId]!!
-                    val sum = listOfTransactions.sumOf { it.amount }
+                .map { (id, list) ->
+                    val category = categoryMap[id]!!
+                    val sum = list.sumOf { it.amount }
 
                     CategoryStatisticsUi(
                         categoryName = category.name,
                         categoryIcon = category.icon,
                         amount = sum,
-                        percents = (sum / totalAmount).toFloat(),
+                        percents = (sum / total).toFloat(),
                         color = category.color.toInt()
                     )
                 }
-                .sortedByDescending { it.amount } // FIXED: now sorting works
+                .sortedByDescending { it.amount }
         }
 
+    enum class PeriodMode {
+        YEAR, MONTH
+    }
 }
