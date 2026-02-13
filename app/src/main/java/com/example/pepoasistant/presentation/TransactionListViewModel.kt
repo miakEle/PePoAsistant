@@ -36,8 +36,10 @@ class TransactionListViewModel(
         viewModelScope.launch {
             combine(
                 repo.getAllTransactions(),
-                repoCategory.getAllCategories()
-            ) { transactions, categories ->
+                repoCategory.getAllCategories(),
+                _selectedYear,
+                _selectedMonth
+            ) { transactions, categories, year, month ->
 
                 val categoryMap = categories.associateBy { it.id }
 
@@ -48,6 +50,7 @@ class TransactionListViewModel(
                 }
 
                 uiList
+                    .filter { it.date.year == year && it.date.monthValue == month }
                     .sortedByDescending { it.date }
                     .groupBy { it.date.withDayOfMonth(1) }
                     .flatMap { (monthDate, monthItems) ->
@@ -79,8 +82,9 @@ class TransactionListViewModel(
     }
 
     fun setSelectedYearAndMonth(year: Int, month: Int) {
-        _selectedYear.value = year
-        _selectedMonth.value = month
+        val targetDate = LocalDate.of(year,month,1)
+        _selectedYear.value = targetDate.year
+        _selectedMonth.value = targetDate.monthValue
 
     }
 
