@@ -5,7 +5,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.example.pepoasistant.R
 import com.example.pepoasistant.databinding.BottomSheetMonthYearBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -24,6 +26,7 @@ class BottomSheetMonthYear(
     val binding: BottomSheetMonthYearBinding
         get() = _binding ?: throw RuntimeException("BottomsheetMonthYearBinding == null")
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,7 +39,8 @@ class BottomSheetMonthYear(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val months = listOf(
             "tammi", "helmi", "maalis", "huhti", "touko", "kesä",
-            "heinä", "elo", "syys", "loka", "marras", "joulu")
+            "heinä", "elo", "syys", "loka", "marras", "joulu"
+        )
 
         fun updateUI() {
             binding.tvYear.text = selectedYear.toString()
@@ -46,11 +50,25 @@ class BottomSheetMonthYear(
                 val tv = TextView(requireContext()).apply {
                     text = months[i - 1]
                     textSize = 16f
-                    setPadding(8,8,8,8)
-                    gravity = Gravity.CENTER
-                    if (i == selectedMonth) {
-                        setBackgroundResource(R.color.card_bg_selector)
+                    setPadding(8, 8, 8, 8)
+
+                    val params = GridLayout.LayoutParams().apply {
+                        width = 0
+                        height = GridLayout.LayoutParams.WRAP_CONTENT
+                        columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
                     }
+
+                    layoutParams = params
+                    gravity = Gravity.CENTER
+                    background = ContextCompat.getDrawable(
+                        requireContext(),
+                        if (i == selectedMonth)
+                            R.drawable.bg_month_selected
+                        else R.drawable.bg_month_dialog_rounded
+                    )
+//                    if (i == selectedMonth) {
+//                        setBackgroundResource(R.color.card_text_color_selector)
+//                    }
                     setOnClickListener {
                         selectedMonth = i
                         updateUI()
