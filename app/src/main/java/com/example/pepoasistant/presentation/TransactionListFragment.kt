@@ -17,17 +17,22 @@ import com.example.pepoasistant.data.TransactionRepositoryImp
 import com.example.pepoasistant.databinding.BottomSheetMonthYearBinding
 import com.example.pepoasistant.databinding.FragmentTransactionsListBinding
 import kotlinx.coroutines.launch
+import org.checkerframework.checker.units.qual.m
 import java.time.LocalDate
 
 class TransactionListFragment: Fragment() {
 
     private lateinit var viewModel: TransactionListViewModel
     private lateinit var adapter: TransactionListAdapter
-
     private var _binding: FragmentTransactionsListBinding? = null
 
     val binding: FragmentTransactionsListBinding
         get() = _binding ?: throw RuntimeException("FragmentTransactionsListBinding == null")
+
+    val months = listOf(
+        "tammi", "helmi", "maalis", "huhti", "touko", "kesä",
+        "heinä", "elo", "syys", "loka", "marras", "joulu"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,13 +60,25 @@ class TransactionListFragment: Fragment() {
         val recycler = view.findViewById<RecyclerView>(R.id.recyclerView)
         recycler.adapter = adapter
 
-        binding.actMonth.setOnClickListener {
+        binding.tvMonth.setOnClickListener {
             BottomSheetMonthYear(
                 initialYear = LocalDate.now().year,
                 initialMonth = LocalDate.now().monthValue
             ) { year, month ->
                 viewModel.setSelectedYearAndMonth(year, month)
             }.show(parentFragmentManager, "monthYearPicker")
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.selectedYear.collect { year ->
+                binding.tvYear.text = year.toString()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.selectedMonth.collect { month ->
+                binding.tvMonth.text = months[month - 1]
+            }
         }
 
 
