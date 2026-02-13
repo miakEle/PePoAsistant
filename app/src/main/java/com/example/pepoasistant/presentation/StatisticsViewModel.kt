@@ -19,9 +19,6 @@ class StatisticsViewModel(
         "heinä", "elo", "syys", "loka", "marras", "joulu"
     )
 
-    // -----------------------------
-    // PERIOD MODE (MONTH / YEAR)
-    // -----------------------------
     private val _mode = MutableStateFlow(PeriodMode.MONTH)
     val mode = _mode.asStateFlow()
 

@@ -8,6 +8,7 @@ import com.example.pepoasistant.domain.repositories.CategoryRepository
 import com.example.pepoasistant.domain.repositories.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -21,7 +22,12 @@ class TransactionListViewModel(
 ) : ViewModel(){
 
     private val mapper = TransactionUiMapper()
-    private val uiFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+
+    private val _selectedYear = MutableStateFlow(LocalDate.now().year)
+    val selectedYear = _selectedYear.asStateFlow()
+
+    private val _selectedMonth = MutableStateFlow(LocalDate.now().monthValue)
+    val selectedMonth = _selectedMonth.asStateFlow()
 
     private val _transactionListGrouped = MutableStateFlow<List<TransactionListItem>>(emptyList())
     val transactionListGrouped: StateFlow<List<TransactionListItem>> = _transactionListGrouped
@@ -69,6 +75,12 @@ class TransactionListViewModel(
                 _transactionListGrouped.value = groupedList
             }
         }
+
+    }
+
+    fun setSelectedYearAndMonth(year: Int, month: Int) {
+        _selectedYear.value = year
+        _selectedMonth.value = month
 
     }
 

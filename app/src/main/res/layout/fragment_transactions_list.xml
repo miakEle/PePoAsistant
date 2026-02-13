@@ -31,9 +31,13 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
+                    android:id="@+id/actMonth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="HELMI"/>
+                    android:text="HELMI"
+                    android:focusable="false"
+                    android:clickable="true"/>
+
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

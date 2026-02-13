@@ -78,5 +78,7 @@ class BottomSheetMonthYear(
             onSelected(selectedYear, selectedMonth)
             dismiss()
         }
+
+        updateUI()
     }
 }
