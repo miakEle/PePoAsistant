@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
 import com.example.pepoasistant.R
 import com.example.pepoasistant.databinding.BottomSheetMonthYearBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -49,13 +50,17 @@ class BottomSheetMonthYear(
             for (i in 1..12) {
                 val tv = TextView(requireContext()).apply {
                     text = months[i - 1]
-                    textSize = 16f
+                    textSize = 20f
+                    setTextColor(ContextCompat.getColor(requireContext(),if (i == selectedMonth)
+                    R.color.black else R.color.white))
+
                     setPadding(8, 8, 8, 8)
 
                     val params = GridLayout.LayoutParams().apply {
                         width = 0
                         height = GridLayout.LayoutParams.WRAP_CONTENT
                         columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                        setMargins(8, 8, 8, 8)
                     }
 
                     layoutParams = params
@@ -66,9 +71,6 @@ class BottomSheetMonthYear(
                             R.drawable.bg_month_selected
                         else R.drawable.bg_month_dialog_rounded
                     )
-//                    if (i == selectedMonth) {
-//                        setBackgroundResource(R.color.card_text_color_selector)
-//                    }
                     setOnClickListener {
                         selectedMonth = i
                         updateUI()
