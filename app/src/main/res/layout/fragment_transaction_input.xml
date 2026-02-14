@@ -98,7 +98,6 @@
                 app:boxStrokeColor="@color/text_input_stroke_selector"
                 app:boxStrokeWidth="1dp"
                 app:boxStrokeWidthFocused="4dp"
-                app:cursorColor="@color/olive"
                 app:hintTextColor="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -152,9 +151,9 @@
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/olive"
+                android:backgroundTint="@color/green_300"
                 android:text="TALLENNA"
-                android:textColor="@color/white" />
+                android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
