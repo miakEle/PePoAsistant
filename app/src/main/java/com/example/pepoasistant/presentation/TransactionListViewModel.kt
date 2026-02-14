@@ -8,9 +8,12 @@ import com.example.pepoasistant.domain.entities.TypeOfCategory
 import com.example.pepoasistant.domain.repositories.CategoryRepository
 import com.example.pepoasistant.domain.repositories.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -36,6 +39,14 @@ class TransactionListViewModel(
 
     private val _amountOfIExpense = MutableStateFlow(0.0)
     val amountOfIExpense = _amountOfIExpense.asStateFlow()
+
+    val balance : StateFlow<Double> =
+        combine(_amountOfIncome, _amountOfIExpense) { amountOfIncome, amountOfExpense ->
+            amountOfIncome - amountOfExpense
+        }.stateIn(viewModelScope, SharingStarted.Lazily,0.0)
+
+
+
 
     init {
         viewModelScope.launch {

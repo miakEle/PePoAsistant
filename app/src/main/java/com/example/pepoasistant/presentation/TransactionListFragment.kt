@@ -100,6 +100,18 @@ class TransactionListFragment : Fragment() {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.balance.collect { amount ->
+                if (amount < 0) {
+                    binding.tvAmountSaldo.text = "- ${kotlin.math.abs(amount)}"
+                } else {
+                    binding.tvAmountSaldo.text = amount.toString()
+                }
+
+
+            }
+        }
+
 
 
     }
