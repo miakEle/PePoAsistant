@@ -14,13 +14,13 @@ import com.example.pepoasistant.R
 import com.example.pepoasistant.data.CategoryRepositoryImp
 import com.example.pepoasistant.data.DatabaseProvider
 import com.example.pepoasistant.data.TransactionRepositoryImp
-import com.example.pepoasistant.databinding.BottomSheetMonthYearBinding
 import com.example.pepoasistant.databinding.FragmentTransactionsListBinding
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import org.checkerframework.checker.units.qual.m
 import java.time.LocalDate
 
-class TransactionListFragment: Fragment() {
+class TransactionListFragment : Fragment() {
 
     private lateinit var viewModel: TransactionListViewModel
     private lateinit var adapter: TransactionListAdapter
@@ -87,5 +87,20 @@ class TransactionListFragment: Fragment() {
                 adapter.submitList(list)
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.amountOfIncome.collect { amount ->
+                binding.tvAmountIncome.text = amount.toString()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.amountOfIExpense.collect { amount ->
+                binding.tvAmountExpense.text = amount.toString()
+            }
+        }
+
+
+
     }
 }

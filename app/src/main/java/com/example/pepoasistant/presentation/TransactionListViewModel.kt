@@ -4,22 +4,21 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pepoasistant.domain.entities.TypeOfCategory
 import com.example.pepoasistant.domain.repositories.CategoryRepository
 import com.example.pepoasistant.domain.repositories.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 class TransactionListViewModel(
     private val repo: TransactionRepository,
     private val repoCategory: CategoryRepository
-) : ViewModel(){
+) : ViewModel() {
 
     private val mapper = TransactionUiMapper()
 
@@ -32,6 +31,12 @@ class TransactionListViewModel(
     private val _transactionListGrouped = MutableStateFlow<List<TransactionListItem>>(emptyList())
     val transactionListGrouped: StateFlow<List<TransactionListItem>> = _transactionListGrouped
 
+    private val _amountOfIncome = MutableStateFlow(0.0)
+    val amountOfIncome = _amountOfIncome.asStateFlow()
+
+    private val _amountOfIExpense = MutableStateFlow(0.0)
+    val amountOfIExpense = _amountOfIExpense.asStateFlow()
+
     init {
         viewModelScope.launch {
             combine(
@@ -43,14 +48,25 @@ class TransactionListViewModel(
 
                 val categoryMap = categories.associateBy { it.id }
 
-                val uiList = transactions.map { tx ->
-                    val category = categoryMap[tx.categoryId]
-                        ?: error("Category not found for id ${tx.categoryId}")
-                    mapper.toUi(tx, category)
-                }
+                var amountIncome = 0.0
+                var amountExpense = 0.0
 
-                uiList
+                val uiListFiltered = transactions
                     .filter { it.date.year == year && it.date.monthValue == month }
+                    .map { tx ->
+                        val category = categoryMap[tx.categoryId]
+                            ?: error("Category not found for id ${tx.categoryId}")
+                        when(category.type){
+                            TypeOfCategory.INCOME -> amountIncome+=tx.amount
+                            TypeOfCategory.EXPENSE -> amountExpense+=tx.amount
+                        }
+                        mapper.toUi(tx, category)
+                    }
+
+                _amountOfIncome.value = amountIncome
+                _amountOfIExpense.value = amountExpense
+
+                uiListFiltered
                     .sortedByDescending { it.date }
                     .groupBy { it.date.withDayOfMonth(1) }
                     .flatMap { (monthDate, monthItems) ->
@@ -82,7 +98,7 @@ class TransactionListViewModel(
     }
 
     fun setSelectedYearAndMonth(year: Int, month: Int) {
-        val targetDate = LocalDate.of(year,month,1)
+        val targetDate = LocalDate.of(year, month, 1)
         _selectedYear.value = targetDate.year
         _selectedMonth.value = targetDate.monthValue
 
