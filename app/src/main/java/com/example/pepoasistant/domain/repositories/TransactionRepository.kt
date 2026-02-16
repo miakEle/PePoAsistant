@@ -7,6 +7,8 @@ interface TransactionRepository {
 
     fun getAllTransactions(): Flow<List<Transaction>>
 
+    suspend fun getTransactionById(id: Long): Transaction?
+
     fun getTransactionsForMonth(year: Int, month: Int): Flow<List<Transaction>>
 
     suspend fun addTransaction(transaction: Transaction)

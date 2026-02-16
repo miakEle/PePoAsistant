@@ -16,7 +16,7 @@ import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
 
-class TransactionListAdapter() :
+class TransactionListAdapter(private val onClick: (Long) -> Unit) :
     ListAdapter<TransactionListItem, RecyclerView.ViewHolder>(TransactionListItemDiffCallBack()) {
 
 
@@ -72,7 +72,7 @@ class TransactionListAdapter() :
         }
     }
 
-    class TransactionVH(view: View) : RecyclerView.ViewHolder(view) {
+    inner class TransactionVH(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(t: TransactionUi) {
             itemView.findViewById<ImageView>(R.id.itemIcon).setImageResource(itemView.resources.getIdentifier(
                 t.categoryIcon,
@@ -83,6 +83,7 @@ class TransactionListAdapter() :
             itemView.findViewById<TextView>(R.id.itemTitle).text = t.categoryName
             itemView.findViewById<TextView>(R.id.itemSubtitle).text = t.note
             itemView.findViewById<TextView>(R.id.itemValue).text = t.amount.toString()
+            itemView.setOnClickListener { onClick(t.id) }
 
         }
     }

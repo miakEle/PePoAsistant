@@ -27,8 +27,6 @@ class TransactionViewModel(
         }
     }
 
-//    private var isSelectedId: Long = 0
-
     private val _typeOfCategory = MutableStateFlow<TypeOfCategory>(TypeOfCategory.EXPENSE)
     val typeOfCategory: StateFlow<TypeOfCategory> = _typeOfCategory
 
@@ -36,9 +34,22 @@ class TransactionViewModel(
     private val _state = MutableStateFlow<List<CategoryUi>>(emptyList())
     val state: StateFlow<List<CategoryUi>> = _state
 
+    private var _transaction = MutableStateFlow<Transaction?>(null)
+    val transaction: StateFlow<Transaction?> = _transaction
+
+    fun loadTransaction(id: Long) {
+        viewModelScope.launch {
+            if (id != -1L) {
+                _transaction.value = repository.getTransactionById(id)
+            }
+        }
+    }
+
+
     fun selectType(t: TypeOfCategory) {
         _typeOfCategory.value = t
     }
+
 
     fun getAllCategoriesByType() {
         viewModelScope.launch {

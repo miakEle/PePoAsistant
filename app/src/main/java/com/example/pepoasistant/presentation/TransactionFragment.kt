@@ -13,11 +13,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.example.pepoasistant.R
 import com.example.pepoasistant.data.CategoryRepositoryImp
 import com.example.pepoasistant.data.DatabaseProvider
 import com.example.pepoasistant.data.TransactionRepositoryImp
 import com.example.pepoasistant.databinding.FragmentTransactionInputBinding
+import com.example.pepoasistant.domain.entities.Transaction
 import com.example.pepoasistant.domain.entities.TypeOfCategory
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -34,6 +36,8 @@ class TransactionInputFragment : Fragment() {
     private var selectedCategoryId: Long? = null
 
     private var selectedDate: LocalDate = LocalDate.now()
+
+    private val args: TransactionInputFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +60,12 @@ class TransactionInputFragment : Fragment() {
         val factory = TransactionViewModelFactory(transactionRepo, categoryRepo, mapper)
         viewModel = ViewModelProvider(this, factory)[TransactionViewModel::class.java]
 
+        val transactionId = args.transactionId
+
+        if(transactionId != -1L){
+            viewModel.loadTransaction(transactionId)
+        }
+
         val adapter = CategoryAdapter { category ->
             selectedCategoryId = category.id
             viewModel.onCategoryClicked(category.id)
@@ -75,6 +85,14 @@ class TransactionInputFragment : Fragment() {
             binding.cardIncome.isChecked = true
             binding.cardExpense.isChecked = false
             viewModel.selectType(TypeOfCategory.INCOME)
+        }
+
+        lifecycleScope.launch {
+            viewModel.transaction.collect { transaction ->
+                if(transaction != null){
+                    loadEditingMode(transaction)
+                }
+            }
         }
 
 
@@ -123,6 +141,12 @@ class TransactionInputFragment : Fragment() {
 
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    private fun loadEditingMode(transaction: Transaction) {
+        binding.amountInput.setText(transaction.amount.toString())
+        binding.dateInput.setText(transaction.date.toString())
+        binding.noteInput.setText(transaction.note)
     }
 
 

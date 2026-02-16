@@ -25,6 +25,10 @@
         android:name="com.example.pepoasistant.presentation.TransactionInputFragment"
         android:label="Statistics"
         tools:layout="@layout/fragment_transaction_input" >
+        <argument
+            android:name="transactionId"
+            app:argType="long"
+            android:defaultValue="-1L" />
     </fragment>
 
     <fragment
@@ -32,6 +36,10 @@
         android:name="com.example.pepoasistant.presentation.TransactionListFragment"
         android:label="TransactionList"
         tools:layout="@layout/fragment_transactions_list" >
+        <action
+            android:id="@+id/action_fragment_transaction_list_to_fragment_input"
+            app:destination="@id/fragment_input"
+            app:popUpTo="@id/fragment_transaction_list" />
     </fragment>
 
 </navigation>

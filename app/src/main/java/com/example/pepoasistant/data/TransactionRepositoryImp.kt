@@ -21,7 +21,9 @@ class TransactionRepositoryImp(
             "%02d".format(month)
         ).map { list -> list.map { it.toDomain() } }
 
-
+    override suspend fun getTransactionById(id: Long): Transaction? {
+        return dao.getTransactionById(id)?.toDomain()
+    }
 
 
     override suspend fun addTransaction(transaction: Transaction) {

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.example.pepoasistant.domain.entities.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,6 +21,10 @@ interface TransactionDao {
     ORDER BY date DESC
 """)
     fun getForMonth(year: String, month: String): Flow<List<TransactionEntity>>
+
+    @Query("SELECT * FROM transactions WHERE id = :id LIMIT 1")
+    suspend fun getTransactionById(id: Long): TransactionEntity?
+
 
 
     @Insert

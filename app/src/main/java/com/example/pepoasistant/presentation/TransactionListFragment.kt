@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pepoasistant.R
 import com.example.pepoasistant.data.CategoryRepositoryImp
@@ -55,7 +56,11 @@ class TransactionListFragment : Fragment() {
         val factory = TransactionViewModelFactory(transactionRepo, categoryRepo, mapper)
         viewModel = ViewModelProvider(this, factory)[TransactionListViewModel::class.java]
 
-        adapter = TransactionListAdapter()
+        adapter = TransactionListAdapter { id ->
+            findNavController().navigate(TransactionListFragmentDirections
+                .actionFragmentTransactionListToFragmentInput(id)
+            )
+        }
 
         val recycler = view.findViewById<RecyclerView>(R.id.recyclerView)
         recycler.adapter = adapter
