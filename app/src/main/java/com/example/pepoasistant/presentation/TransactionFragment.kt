@@ -90,6 +90,7 @@ class TransactionInputFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.transaction.collect { transaction ->
                 if(transaction != null){
+                    viewModel.onCategoryClicked(transaction.id)
                     loadEditingMode(transaction)
                 }
             }
@@ -97,7 +98,17 @@ class TransactionInputFragment : Fragment() {
 
 
         lifecycleScope.launch {
-            viewModel.typeOfCategory.collect {
+            viewModel.typeOfCategory.collect {categoryType ->
+                when(categoryType){
+                    TypeOfCategory.EXPENSE -> {
+                        binding.cardExpense.isChecked = true
+                        binding.cardIncome.isChecked = false
+                    }
+                    TypeOfCategory.INCOME -> {
+                        binding.cardIncome.isChecked = true
+                        binding.cardExpense.isChecked = false
+                    }
+                }
                 viewModel.getAllCategoriesByType()
             }
         }
@@ -105,6 +116,17 @@ class TransactionInputFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.state.collect { categories ->
                 adapter.submitList(categories)
+
+                val tx = viewModel.transaction.value
+                if (tx != null) {
+                    val category = categories.firstOrNull { it.id == tx.categoryId }
+                    category?.let {
+                        selectedCategoryId = it.id
+                        viewModel.onCategoryClicked(it.id)
+                        viewModel.selectType(it.type)
+                    }
+                }
+
             }
         }
 

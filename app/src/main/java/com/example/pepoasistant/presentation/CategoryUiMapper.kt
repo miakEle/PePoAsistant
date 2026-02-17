@@ -15,7 +15,8 @@ class CategoryUiMapper(private val context: Context) {
         return CategoryUi(
             id = category.id,
             name = category.name,
-            icon = resId
+            icon = resId,
+            type = category.type
         )
     }
 

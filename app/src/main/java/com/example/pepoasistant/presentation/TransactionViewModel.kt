@@ -60,9 +60,17 @@ class TransactionViewModel(
     }
 
     fun onCategoryClicked(id: Long) {
-        _state.value = _state.value.map { item ->
+        val updated = _state.value.map { item ->
             item.copy(isSelected = item.id == id)
         }
+
+        _state.value = updated
+
+        // Update type based on selected item
+        updated.firstOrNull { it.isSelected }?.let { selected ->
+            _typeOfCategory.value = selected.type
+        }
+
     }
 
     fun insert(
