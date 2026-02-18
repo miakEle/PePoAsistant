@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pepoasistant.R
 import com.example.pepoasistant.data.CategoryRepositoryImp
@@ -52,6 +53,7 @@ class TransactionListFragment : Fragment() {
         val transactionRepo = TransactionRepositoryImp(db.transactionDao())
         val categoryRepo = CategoryRepositoryImp(db.categoryDao())
         val mapper = CategoryUiMapper(requireContext())
+        val transactionMapper = TransactionUiMapper()
 
         val factory = TransactionViewModelFactory(transactionRepo, categoryRepo, mapper)
         viewModel = ViewModelProvider(this, factory)[TransactionListViewModel::class.java]
@@ -64,6 +66,28 @@ class TransactionListFragment : Fragment() {
 
         val recycler = view.findViewById<RecyclerView>(R.id.recyclerView)
         recycler.adapter = adapter
+
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(
+                viewHolder: RecyclerView.ViewHolder,
+                direction: Int
+            ) {
+                val position = viewHolder.layoutPosition
+                val transaction = adapter.currentList[position] as TransactionListItem.TransactionRow
+                viewModel.deleteTransaction(transactionMapper.toData(transaction.transactionUi))
+            }
+        }
+
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(recycler)
 
         binding.tvMonth.setOnClickListener {
             BottomSheetMonthYear(

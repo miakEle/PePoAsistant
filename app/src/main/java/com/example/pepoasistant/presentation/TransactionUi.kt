@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 data class TransactionUi(
     val id: Long,
+    val categoryId: Long,
     val categoryName: String,
     val categoryIcon: String,
     val categoryColor: Long,

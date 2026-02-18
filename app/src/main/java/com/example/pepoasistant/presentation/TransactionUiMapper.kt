@@ -9,6 +9,7 @@ class TransactionUiMapper {
     fun toUi(transaction: Transaction, category: Category): TransactionUi =
         TransactionUi(
             id = transaction.id,
+            categoryId = transaction.categoryId,
             categoryName = category.name,
             categoryIcon = category.icon,
             categoryColor = category.color,
@@ -16,5 +17,12 @@ class TransactionUiMapper {
             date = transaction.date,
             note = transaction.note
         )
-
+    fun toData(transactionUi: TransactionUi): Transaction =
+        Transaction(
+            transactionUi.id,
+            transactionUi.categoryId,
+            transactionUi.amount,
+            transactionUi.date,
+            transactionUi.note
+        )
 }

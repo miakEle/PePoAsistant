@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pepoasistant.domain.entities.Transaction
 import com.example.pepoasistant.domain.entities.TypeOfCategory
 import com.example.pepoasistant.domain.repositories.CategoryRepository
 import com.example.pepoasistant.domain.repositories.TransactionRepository
@@ -113,6 +114,12 @@ class TransactionListViewModel(
         _selectedYear.value = targetDate.year
         _selectedMonth.value = targetDate.monthValue
 
+    }
+
+    fun deleteTransaction(transaction: Transaction) {
+        viewModelScope.launch {
+            repo.deleteTransaction(transaction.id)
+        }
     }
 
 
