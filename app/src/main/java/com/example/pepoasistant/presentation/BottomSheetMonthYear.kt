@@ -24,7 +24,7 @@ class BottomSheetMonthYear(
     private var _binding: BottomSheetMonthYearBinding? = null
 
     val binding: BottomSheetMonthYearBinding
-        get() = _binding ?: throw RuntimeException("BottomsheetMonthYearBinding == null")
+        get() = _binding ?: throw RuntimeException("BottomSheetMonthYearBinding == null")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
