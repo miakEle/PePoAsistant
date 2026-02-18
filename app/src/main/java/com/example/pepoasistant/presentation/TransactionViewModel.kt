@@ -40,7 +40,17 @@ class TransactionViewModel(
     fun loadTransaction(id: Long) {
         viewModelScope.launch {
             if (id != -1L) {
-                _transaction.value = repository.getTransactionById(id)
+                val tx = repository.getTransactionById(id)
+                _transaction.value = tx
+
+                tx?.let {
+                    val category = categoryRepository.getCategoryById(it.categoryId)
+                    category?.let {
+                        _typeOfCategory.value = category.type
+                        getAllCategoriesByType()
+                    }
+                }
+
             }
         }
     }

@@ -12,6 +12,9 @@ class CategoryRepositoryImp(
     override fun getAllCategories(): Flow<List<Category>> =
         dao.getAllCategories().map { list ->  list.map { it.toDomain() }}
 
+    override suspend fun getCategoryById(id: Long): Category? {
+        return dao.getCategoryById(id)?.toDomain()
+    }
 
     override suspend fun addCategory(category: Category) {
         dao.insertCategory(category.toEntity())

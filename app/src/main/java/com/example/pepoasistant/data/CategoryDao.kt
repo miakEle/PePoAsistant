@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.pepoasistant.domain.entities.Category
 import com.example.pepoasistant.domain.entities.TypeOfCategory
 import kotlinx.coroutines.flow.Flow
 
@@ -13,6 +14,9 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories ORDER BY name")
     fun getAllCategories(): Flow<List<CategoryEntity>>
+
+    @Query("SELECT * FROM categories WHERE id = :id LIMIT 1")
+    suspend fun getCategoryById(id: Long): CategoryEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategory(entity: CategoryEntity)
