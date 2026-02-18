@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,7 +21,6 @@ import com.example.pepoasistant.domain.entities.Transaction
 import com.example.pepoasistant.domain.entities.TypeOfCategory
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import kotlin.properties.Delegates
 
 class TransactionInputFragment : Fragment() {
 
@@ -62,7 +59,7 @@ class TransactionInputFragment : Fragment() {
 
         val transactionId = args.transactionId
 
-        if(transactionId != -1L){
+        if (transactionId != -1L) {
             viewModel.loadTransaction(transactionId)
         }
 
@@ -89,7 +86,7 @@ class TransactionInputFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.transaction.collect { transaction ->
-                if(transaction != null){
+                if (transaction != null) {
                     viewModel.onCategoryClicked(transaction.id)
                     loadEditingMode(transaction)
                 }
@@ -98,12 +95,13 @@ class TransactionInputFragment : Fragment() {
 
 
         lifecycleScope.launch {
-            viewModel.typeOfCategory.collect {categoryType ->
-                when(categoryType){
+            viewModel.typeOfCategory.collect { categoryType ->
+                when (categoryType) {
                     TypeOfCategory.EXPENSE -> {
                         binding.cardExpense.isChecked = true
                         binding.cardIncome.isChecked = false
                     }
+
                     TypeOfCategory.INCOME -> {
                         binding.cardIncome.isChecked = true
                         binding.cardExpense.isChecked = false
@@ -154,13 +152,22 @@ class TransactionInputFragment : Fragment() {
                 binding.amountInput.text.toString().toDoubleOrNull() ?: return@setOnClickListener
             val note = binding.noteInput.text?.toString()
 
-            viewModel.insert(
-                categoryId = selectedCategoryId!!,
-                amount = amount,
-                date = selectedDate,
-                note = note
-            )
-
+            if (transactionId != -1L) {
+                viewModel.editTransaction(
+                    id = transactionId,
+                    categoryId = selectedCategoryId!!,
+                    amount = amount,
+                    date = selectedDate,
+                    note = note
+                )
+            } else {
+                viewModel.insert(
+                    categoryId = selectedCategoryId!!,
+                    amount = amount,
+                    date = selectedDate,
+                    note = note
+                )
+            }
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
@@ -210,7 +217,6 @@ class TransactionInputFragment : Fragment() {
 
         return true
     }
-
 
 
 }

@@ -100,4 +100,22 @@ class TransactionViewModel(
             )
         }
     }
+
+    fun editTransaction(
+        id: Long,
+        categoryId: Long,
+        amount: Double,
+        date: LocalDate,
+        note: String?
+    ) {
+        viewModelScope.launch {
+            repository.editTransaction(Transaction(
+                id = id,
+                categoryId = categoryId,
+                amount = amount,
+                date = date,
+                note = note
+            ))
+        }
+    }
 }
