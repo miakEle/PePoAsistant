@@ -15,12 +15,10 @@ class CategoryAdapter(
             parent,
             false
         )
-        return CategoryViewHolder(binding)
+        return CategoryViewHolder(binding, onClick)
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
-        holder.itemView.setOnClickListener { onClick(item) }
+        holder.bind(getItem(position))
     }
 }

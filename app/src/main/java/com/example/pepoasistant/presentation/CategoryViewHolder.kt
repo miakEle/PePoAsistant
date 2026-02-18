@@ -6,7 +6,8 @@ import com.example.pepoasistant.R
 import com.example.pepoasistant.databinding.ItemCategoryBinding
 
 class CategoryViewHolder(
-    private val binding: ItemCategoryBinding
+    private val binding: ItemCategoryBinding,
+    private val onClick: (CategoryUi) -> Unit
 ): RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: CategoryUi) = with(binding){
@@ -20,5 +21,9 @@ class CategoryViewHolder(
             categoryIcon.setColorFilter(ContextCompat.getColor(root.context, R.color.white))
             categoryName.setTextColor(ContextCompat.getColor(root.context, R.color.white))
         }
+        binding.root.setOnClickListener {
+            onClick(item)
+        }
+
     }
 }
